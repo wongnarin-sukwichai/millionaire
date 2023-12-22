@@ -32,7 +32,20 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'id' => 'required',
+            'title' => 'required'
+        ]);
+
+        $data = new Topic();
+
+        $data->shop_id = Auth::user()->shop_id;
+        $data->group_id = $request['id'];
+        $data->title = $request['title'];
+
+        $data->save();
+
+        return response()->json($data);
     }
 
     /**
@@ -66,6 +79,14 @@ class TopicController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = Topic::find($id);
+
+        if ($data->shop_id == Auth::user()->shop_id) {
+            $data->delete();
+        } else {
+            return response()->json([
+                'message' => 'เฉพาะสิทธิ์เจ้าของร้านเท่านั้น'
+            ]);
+        }
     }
 }

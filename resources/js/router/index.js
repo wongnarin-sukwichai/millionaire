@@ -5,6 +5,7 @@ import Home from "../components/Home.vue";
 import Dashboard from "../components/Dashboard.vue";
 import Topic from "../components/Topic.vue";
 import Group from "../components/Group.vue";
+import EditTopic from "../components/EditTopic.vue";
 
 import store from "../store";
 
@@ -45,6 +46,14 @@ const routes = [
                 path: "/group",
                 name: "group",
                 component: Group,
+                meta: {
+                    guard: "auth",
+                },
+            },
+            {
+                path: "/editTopic/:id",
+                name: "editTopic",
+                component: EditTopic,
                 meta: {
                     guard: "auth",
                 },

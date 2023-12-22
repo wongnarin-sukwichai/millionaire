@@ -3,20 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Topic;
 use App\Models\Group;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class GroupController extends Controller
+class EditTopicController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = Group::where('shop_id', Auth::user()->shop_id)->get();
-
-        return response()->json($data);
+        //
     }
 
     /**
@@ -32,19 +31,7 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-
-        $request->validate([
-            'title' => 'required'
-        ]);
-
-        $data = new Group();
-
-        $data->shop_id = Auth::user()->shop_id;
-        $data->title = $request['title'];
-
-        $data->save();
-
-        return response()->json($data);
+        //
     }
 
     /**
@@ -52,7 +39,9 @@ class GroupController extends Controller
      */
     public function show(string $id)
     {
-        $data = Group::find($id);
+        $data = Topic::where('shop_id', Auth::user()->shop_id)
+        ->where('group_id', $id)
+        ->get();
 
         return response()->json($data);
     }
@@ -78,14 +67,6 @@ class GroupController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Group::find($id);
-
-        if ($data->shop_id == Auth::user()->shop_id) {
-            $data->delete();
-        } else {
-            return response()->json([
-                'message' => 'เฉพาะสิทธิ์เจ้าของร้านเท่านั้น'
-            ]);
-        }
+        //
     }
 }

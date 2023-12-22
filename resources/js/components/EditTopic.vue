@@ -10,13 +10,18 @@
             animation="tada-hover"
         ></box-icon>
     </div>
+    <div
+        class="w-full mt-8 sm:p-8 p-8 text-center text-5xl text-sky-700 bg-white border-dashed border-2 border-sky-200 rounded-lg cursor-pointer hover:border-gray-300"
+    >
+        {{ showGroup.title }}
+    </div>
     <div class="grid sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-8">
         <div
             class="relative w-full sm:w-auto bg-green-400 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5"
-            v-for="(group, index) in showGroup"
+            v-for="(topic, index) in showTopic"
             :key="index"
         >
-            {{ group.title }}
+            {{ topic.title }}
             <div class="absolute end-2.5 bottom-1">
                 <box-icon
                     name="trash"
@@ -24,7 +29,7 @@
                     color="white"
                     class="cursor-pointer"
                     animation="tada-hover"
-                    @click="delGroup(group.id, index)"
+                    @click="delTopic(topic.id, index)"
                 ></box-icon>
             </div>
         </div>
@@ -50,7 +55,7 @@
                     <div
                         class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
                     >
-                        <form @submit.prevent="sendGroup()">
+                        <form @submit.prevent="sendTopic()">
                             <div class="bg-white px-4 pt-5 sm:p-4 sm:pb-2">
                                 <div class="sm:flex sm:items-start">
                                     <div
@@ -68,7 +73,7 @@
                                             id="listbox-label"
                                             class="block text-sm font-medium leading-6 text-gray-900"
                                         >
-                                            ชื่อหมวดหมู่ :</label
+                                            ชื่อเรื่อง :</label
                                         >
                                         <input
                                             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -111,12 +116,15 @@ import Swal from "sweetalert2";
 export default {
     mounted() {
         this.getGroup();
+        this.getTopic();
     },
     data() {
         return {
             showGroup: "",
+            showTopic: "",
             isModalShow: false,
             data: {
+                id: this.$route.params.id,
                 title: "",
             },
         };
@@ -124,7 +132,7 @@ export default {
     methods: {
         getGroup() {
             axios
-                .get("/api/group")
+                .get("/api/group/" + this.$route.params.id)
                 .then((response) => {
                     this.showGroup = response.data;
                 })
@@ -132,9 +140,19 @@ export default {
                     console.log(err);
                 });
         },
-        async sendGroup() {
+        getTopic() {
+            axios
+                .get("/api/editTopic/" + this.$route.params.id)
+                .then((response) => {
+                    this.showTopic = response.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async sendTopic() {
             try {
-                await this.$store.dispatch("storeGroup", this.data);
+                await this.$store.dispatch("storeTopic", this.data);
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -143,6 +161,7 @@ export default {
                     timer: 1500,
                 });
                 this.getGroup();
+                this.getTopic();
                 this.isModalShow = false;
             } catch (err) {
                 console.log(err);
@@ -154,7 +173,7 @@ export default {
                 });
             }
         },
-        delGroup(id, index) {
+        delTopic(id, index) {
             Swal.fire({
                 title: "ต้องการลบข้อมูล?",
                 text: "ยืนยันการลบข้อมูลหรือไม่",
@@ -166,14 +185,14 @@ export default {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                        .delete("/api/group/" + id)
+                        .delete("/api/topic/" + id)
                         .then((response) => {
                             //console.log(res);
                         })
                         .catch((err) => {
                             console.log(err);
                         });
-                    this.showGroup.splice(index, 1);
+                    this.showTopic.splice(index, 1);
                     Swal.fire("ลบข้อมูล!", "ลบข้อมูลเรียบร้อย", "success");
                 }
             });

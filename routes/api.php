@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\TopicController;
 use App\Http\Controllers\Api\ShopController;
+use App\Http\Controllers\Api\EditTopicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('group', GroupController::class);
     Route::resource('topic', TopicController::class);
     Route::resource('shop', ShopController::class);
+    Route::resource('editTopic', EditTopicController::class);
 });
 
 

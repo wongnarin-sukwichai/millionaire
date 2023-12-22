@@ -80,7 +80,7 @@ export default {
         link(id) {
             this.$router.push("/topic/" + id);
         },
-        edit(id) {
+        editTopic(id) {
             this.$router.push("/editTopic/" + id);
         }
     },
